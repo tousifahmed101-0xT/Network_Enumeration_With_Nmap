@@ -32,37 +32,37 @@ Ports can be specified in several ways depending on what you need. You can list 
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 --top-ports=10
+sudo nmap 192.168.100.59 --top-ports=10
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 15:36 CEST
-Nmap scan report for 192.168.1.54
-Host is up (0.021s latency).
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:27 -0400
+Nmap scan report for 192.168.100.59
+Host is up (0.00080s latency).
 
-PORT     STATE    SERVICE
-21/tcp   closed   ftp
-22/tcp   open     ssh
-23/tcp   closed   telnet
-25/tcp   open     smtp
-80/tcp   open     http
-110/tcp  open     pop3
-139/tcp  filtered netbios-ssn
-443/tcp  closed   https
-445/tcp  filtered microsoft-ds
-3389/tcp closed   ms-wbt-server
-MAC Address: DE:AD:00:00:BE:EF (Intel Corporate)
+PORT     STATE  SERVICE
+21/tcp   closed ftp
+22/tcp   open   ssh
+23/tcp   closed telnet
+25/tcp   closed smtp
+80/tcp   open   http
+110/tcp  closed pop3
+139/tcp  open   netbios-ssn
+443/tcp  open   https
+445/tcp  open   microsoft-ds
+3389/tcp closed ms-wbt-server
+MAC Address: 08:00:27:00:14:D9 (Oracle VirtualBox virtual NIC)
 
-Nmap done: 1 IP address (1 host up) scanned in 1.44 seconds
+Nmap done: 1 IP address (1 host up) scanned in 0.80 seconds
 ```
 
 **Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
-| 192.168.1.54 | The target being scanned |
+| 192.168.100.59 | The target being scanned |
 | --top-ports=10 | Scans the 10 most commonly used TCP ports as defined in the Nmap database |
 
 The output shows three different states across the ten ports. Ports 22, 25, 80, and 110 are open and have active services listening. Ports 21, 23, 443, and 3389 are closed, meaning the host responded with RST to confirm the port is not in use. Ports 139 and 445 are filtered, meaning no response came back, which typically points to a firewall dropping those packets.
@@ -76,30 +76,31 @@ To understand what actually happens when a port is closed, we can trace the pack
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 -p 21 --packet-trace -Pn -n --disable-arp-ping
+sudo nmap 192.168.100.59 -p 21 --packet-trace -Pn -n --disable-arp-ping
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 15:39 CEST
-SENT (0.0429s) TCP 192.168.1.10:63090 > 192.168.1.54:21 S ttl=56 id=57322 iplen=44  seq=1699105818 win=1024 <mss 1460>
-RCVD (0.0573s) TCP 192.168.1.54:21 > 192.168.1.10:63090 RA ttl=64 id=0 iplen=40  seq=0 win=0
-Nmap scan report for 192.168.1.54
-Host is up (0.014s latency).
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:28 -0400
+SENT (0.0980s) TCP 192.168.100.94:44093 > 192.168.100.59:21 S ttl=39 id=22759 iplen=44  seq=520204497 win=1024 <mss 1460>
+RCVD (0.0991s) TCP 192.168.100.59:21 > 192.168.100.94:44093 RA ttl=64 id=0 iplen=40  seq=0 win=0 
+Nmap scan report for 192.168.100.59
+Host is up (0.0012s latency).
 
 PORT   STATE  SERVICE
 21/tcp closed ftp
-MAC Address: DE:AD:00:00:BE:EF (Intel Corporate)
+MAC Address: 40:00:40:06:F0:E5 (Unknown)
 
-Nmap done: 1 IP address (1 host up) scanned in 0.07 seconds
+Nmap done: 1 IP address (1 host up) scanned in 0.24 seconds
+
 ```
 
 **Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
-| 192.168.1.54 | The target being scanned |
+| 192.168.100.59 | The target being scanned |
 | -p 21 | Scans only port 21 |
 | --packet-trace | Shows all packets sent and received |
 | -n | Disables DNS resolution |
@@ -115,12 +116,12 @@ The RCVD line shows the target replied with a packet containing the `RA` flags, 
 
 | Field | Meaning |
 |-------|---------|
-| SENT (0.0429s) | Nmap sent this packet at 0.0429 seconds into the scan |
+| SENT (0.0.0980s) | Nmap sent this packet at 0.0429 seconds into the scan |
 | TCP | The protocol being used |
-| 192.168.1.10:63090 > | Source IP and port (the scanner) |
-| 192.168.1.54:21 | Destination IP and port (the target) |
+| 192.168.1.10:44093 > | Source IP and port (the scanner) |
+| 192.168.100.59:21 | Destination IP and port (the target) |
 | S | SYN flag set in the TCP header |
-| ttl=56 id=57322 iplen=44 seq=1699105818 win=1024 mss 1460 | Additional TCP and IP header values |
+| ttl=39 id=22759 iplen=44  seq=520204497 win=1024 <mss 1460> | Additional TCP and IP header values |
 
 **Response breakdown:**
 
@@ -128,10 +129,10 @@ The RCVD line shows the target replied with a packet containing the `RA` flags, 
 |-------|---------|
 | RCVD (0.0573s) | This packet was received at 0.0573 seconds |
 | TCP | The protocol used in the response |
-| 192.168.1.54:21 > | Source IP and port (the target responding) |
+| 192.168.100.59:21 > | Source IP and port (the target responding) |
 | 192.168.1.10:63090 | Destination IP and port (back to the scanner) |
 | RA | RST and ACK flags set, indicating the port is closed |
-| ttl=64 id=0 iplen=40 seq=0 win=0 | TCP and IP header values in the reply |
+| ttl=64 id=0 iplen=40  seq=0 win=0 | TCP and IP header values in the reply |
 
 ---
 
@@ -146,22 +147,23 @@ The SYN scan (-sS) is considered more stealthy by comparison because it never co
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 -p 443 --packet-trace --disable-arp-ping -Pn -n --reason -sT
+sudo nmap 192.168.100.59 -p 443 --packet-trace --disable-arp-ping -Pn -n --reason -sT
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 16:26 CET
-CONN (0.0385s) TCP localhost > 192.168.1.54:443 => Operation now in progress
-CONN (0.0396s) TCP localhost > 192.168.1.54:443 => Connected
-Nmap scan report for 192.168.1.54
-Host is up, received user-set (0.013s latency).
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:34 -0400
+CONN (0.0867s) TCP localhost > 192.168.100.59:443 => Operation now in progress
+CONN (0.0873s) TCP localhost > 192.168.100.59:443 => Connected
+Nmap scan report for 192.168.100.59
+Host is up, received user-set (0.00054s latency).
 
 PORT    STATE SERVICE REASON
 443/tcp open  https   syn-ack
 
-Nmap done: 1 IP address (1 host up) scanned in 0.04 seconds
+Nmap done: 1 IP address (1 host up) scanned in 0.09 seconds
+
 ```
 
 The CONN lines in the packet trace show the full connection being established. First the connection is initiated (Operation now in progress), and then successfully completed (Connected). The reason field shows `syn-ack`, confirming the target responded with SYN-ACK to indicate port 443 is open.
@@ -179,30 +181,33 @@ When a firewall drops packets, Nmap receives no response at all. By default, Nma
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 -p 139 --packet-trace -n --disable-arp-ping -Pn
+sudo nmap 192.168.100.59 -p 139 --packet-trace -n --disable-arp-ping -Pn
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 15:45 CEST
-SENT (0.0381s) TCP 192.168.1.10:60277 > 192.168.1.54:139 S ttl=47 id=14523 iplen=44  seq=4175236769 win=1024 <mss 1460>
-SENT (1.0411s) TCP 192.168.1.10:60278 > 192.168.1.54:139 S ttl=45 id=7372 iplen=44  seq=4175171232 win=1024 <mss 1460>
-Nmap scan report for 192.168.1.54
-Host is up.
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:36 -0400
+SENT (0.0950s) TCP 192.168.100.94:33892 > 192.168.100.59:139 S ttl=41 id=49086 iplen=44  seq=1868536983 win=1024 <mss 1460>
+RCVD (0.0955s) TCP 192.168.100.59:139 > 192.168.100.94:33892 SA ttl=64 id=0 iplen=44  seq=3783376353 win=5840 <mss 1460>
+Stats: 0:00:00 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan
+SYN Stealth Scan Timing: About 100.00% done; ETC: 13:36 (0:00:00 remaining)
+Nmap scan report for 192.168.100.59
+Host is up (0.00052s latency).
 
-PORT    STATE    SERVICE
-139/tcp filtered netbios-ssn
-MAC Address: DE:AD:00:00:BE:EF (Intel Corporate)
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+MAC Address: 40:00:40:06:F0:E1 (Unknown)
 
-Nmap done: 1 IP address (1 host up) scanned in 2.06 seconds
+Nmap done: 1 IP address (1 host up) scanned in 0.24 seconds
+
 ```
 
 **Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
-| 192.168.1.54 | The target being scanned |
+| 192.168.100.59 | The target being scanned |
 | -p 139 | Scans only port 139 |
 | --packet-trace | Shows all packets sent and received |
 | -n | Disables DNS resolution |
@@ -218,30 +223,31 @@ When a firewall actively rejects a packet, it sends back an ICMP error message i
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 -p 445 --packet-trace -n --disable-arp-ping -Pn
+sudo nmap 192.168.100.59 -p 445 --packet-trace -n --disable-arp-ping -Pn
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 15:55 CEST
-SENT (0.0388s) TCP 192.168.1.54:52472 > 192.168.1.54:445 S ttl=49 id=21763 iplen=44  seq=1418633433 win=1024 <mss 1460>
-RCVD (0.0487s) ICMP [192.168.1.54 > 192.168.1.54 Port 445 unreachable (type=3/code=3) ] IP [ttl=64 id=20998 iplen=72 ]
-Nmap scan report for 192.168.1.54
-Host is up (0.0099s latency).
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:37 -0400
+SENT (0.0975s) TCP 192.168.100.94:57559 > 192.168.100.59:445 S ttl=54 id=46801 iplen=44  seq=1207954545 win=1024 <mss 1460>
+RCVD (0.0984s) TCP 192.168.100.59:445 > 192.168.100.94:57559 SA ttl=64 id=0 iplen=44  seq=632388572 win=5840 <mss 1460>
+Nmap scan report for 192.168.100.59
+Host is up (0.00089s latency).
 
-PORT    STATE    SERVICE
-445/tcp filtered microsoft-ds
-MAC Address: DE:AD:00:00:BE:EF (Intel Corporate)
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+MAC Address: 40:00:40:06:F0:E1 (Unknown)
 
-Nmap done: 1 IP address (1 host up) scanned in 0.05 seconds
+Nmap done: 1 IP address (1 host up) scanned in 0.22 seconds
+
 ```
 
 **Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
-| 192.168.1.54 | The target being scanned |
+| 192.168.100.59 | The target being scanned |
 | -p 445 | Scans only port 445 |
 | --packet-trace | Shows all packets sent and received |
 | -n | Disables DNS resolution |
@@ -261,32 +267,28 @@ Because of this, UDP scans (-sU) have a much longer timeout period per port, and
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 -F -sU
+sudo nmap 192.168.100.59 -F -sU
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 16:01 CEST
-Nmap scan report for 192.168.1.54
-Host is up (0.059s latency).
-Not shown: 95 closed ports
-PORT     STATE         SERVICE
-68/udp   open|filtered dhcpc
-137/udp  open          netbios-ns
-138/udp  open|filtered netbios-dgm
-631/udp  open|filtered ipp
-5353/udp open          zeroconf
-MAC Address: DE:AD:00:00:BE:EF (Intel Corporate)
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:38 -0400
+Nmap scan report for 192.168.100.59
+Host is up (0.00057s latency).
+Not shown: 58 closed udp ports (port-unreach), 41 open|filtered udp ports (no-response)
+PORT    STATE SERVICE
+137/udp open  netbios-ns
+MAC Address: 08:00:27:00:14:D9 (Oracle VirtualBox virtual NIC)
 
-Nmap done: 1 IP address (1 host up) scanned in 98.07 seconds
+Nmap done: 1 IP address (1 host up) scanned in 59.33 seconds
 ```
 
 **Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
-| 192.168.1.54 | The target being scanned |
+| 192.168.100.59 | The target being scanned |
 | -F | Scans the top 100 ports |
 | -sU | Performs a UDP scan |
 
@@ -299,30 +301,32 @@ The scan took 98 seconds for just 100 ports. Port 137 and 5353 returned definiti
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 -sU -Pn -n --disable-arp-ping --packet-trace -p 137 --reason
+sudo nmap 192.168.100.59 -sU -Pn -n --disable-arp-ping --packet-trace -p 137 --reason
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 16:15 CEST
-SENT (0.0367s) UDP 192.168.1.10:55478 > 192.168.1.54:137 ttl=57 id=9122 iplen=78
-RCVD (0.0398s) UDP 192.168.1.54:137 > 192.168.1.10:55478 ttl=64 id=13222 iplen=257
-Nmap scan report for 192.168.1.54
-Host is up, received user-set (0.0031s latency).
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:39 -0400
+SENT (0.4090s) UDP 192.168.100.94:59643 > 192.168.100.59:137 ttl=53 id=63034 iplen=78 
+SENT (0.4091s) UDP 192.168.100.94:59643 > 192.168.100.59:137 ttl=55 id=63034 iplen=78 
+SENT (0.4091s) UDP 192.168.100.94:59643 > 192.168.100.59:137 ttl=41 id=63034 iplen=78 
+RCVD (0.4101s) UDP 192.168.100.59:137 > 192.168.100.94:59643 ttl=64 id=0 iplen=365 
+Nmap scan report for 192.168.100.59
+Host is up, received user-set (0.0012s latency).
 
 PORT    STATE SERVICE    REASON
 137/udp open  netbios-ns udp-response ttl 64
-MAC Address: DE:AD:00:00:BE:EF (Intel Corporate)
 
-Nmap done: 1 IP address (1 host up) scanned in 0.04 seconds
+Nmap done: 1 IP address (1 host up) scanned in 0.44 seconds
+
 ```
 
 **Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
-| 192.168.1.54 | The target being scanned |
+| 192.168.100.59 | The target being scanned |
 | -sU | Performs a UDP scan |
 | -Pn | Disables ICMP echo requests |
 | -n | Disables DNS resolution |
@@ -340,23 +344,23 @@ A UDP packet was sent and a UDP reply came back from the target. The reason show
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 -sU -Pn -n --disable-arp-ping --packet-trace -p 100 --reason
+sudo nmap 192.168.100.59 -sU -Pn -n --disable-arp-ping --packet-trace -p 100 --reason
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 16:25 CEST
-SENT (0.0445s) UDP 192.168.1.10:63825 > 192.168.1.54:100 ttl=57 id=29925 iplen=28
-RCVD (0.1498s) ICMP [192.168.1.54 > 192.168.1.10 Port unreachable (type=3/code=3) ] IP [ttl=64 id=11903 iplen=56 ]
-Nmap scan report for 192.168.1.54
-Host is up, received user-set (0.11s latency).
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:40 -0400
+SENT (0.4095s) UDP 192.168.100.94:60808 > 192.168.100.59:100 ttl=37 id=1171 iplen=28 
+RCVD (0.4099s) ICMP [192.168.100.59 > 192.168.100.94 Port unreachable (type=3/code=3) ] IP [ttl=64 id=1349 iplen=56 ]
+Nmap scan report for 192.168.100.59
+Host is up, received user-set (0.00043s latency).
 
 PORT    STATE  SERVICE REASON
 100/udp closed unknown port-unreach ttl 64
-MAC Address: DE:AD:00:00:BE:EF (Intel Corporate)
 
-Nmap done: 1 IP address (1 host up) scanned in 0.15 seconds
+Nmap done: 1 IP address (1 host up) scanned in 0.45 seconds
+
 ```
 
 A UDP packet was sent to port 100, and the target responded with an ICMP type 3, code 3 message meaning "Port Unreachable". This is how a system signals that nothing is listening on a UDP port. The reason shown is `port-unreach`, and the port is marked as closed.
@@ -368,30 +372,30 @@ A UDP packet was sent to port 100, and the target responded with an ICMP type 3,
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 -sU -Pn -n --disable-arp-ping --packet-trace -p 138 --reason
+sudo nmap 192.168.100.59 -sU -Pn -n --disable-arp-ping --packet-trace -p 138 --reason
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2020-06-15 16:32 CEST
-SENT (0.0380s) UDP 192.168.1.10:52341 > 192.168.1.54:138 ttl=50 id=65159 iplen=28
-SENT (1.0392s) UDP 192.168.1.10:52342 > 192.168.1.54:138 ttl=40 id=24444 iplen=28
-Nmap scan report for 192.168.1.54
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:40 -0400
+SENT (0.4140s) UDP 192.168.100.94:48404 > 192.168.100.59:138 ttl=38 id=40645 iplen=28 
+SENT (1.4144s) UDP 192.168.100.94:48406 > 192.168.100.59:138 ttl=52 id=39660 iplen=28 
+Nmap scan report for 192.168.100.59
 Host is up, received user-set.
 
 PORT    STATE         SERVICE     REASON
 138/udp open|filtered netbios-dgm no-response
-MAC Address: DE:AD:00:00:BE:EF (Intel Corporate)
 
-Nmap done: 1 IP address (1 host up) scanned in 2.06 seconds
+Nmap done: 1 IP address (1 host up) scanned in 2.45 seconds
+
 ```
 
 **Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
-| 192.168.1.54 | The target being scanned |
+| 192.168.100.59 | The target being scanned |
 | -sU | Performs a UDP scan |
 | -Pn | Disables ICMP echo requests |
 | -n | Disables DNS resolution |
@@ -411,44 +415,44 @@ Once open ports have been identified, the next step is finding out exactly what 
 **Command:**
 
 ```bash
-sudo nmap 192.168.1.54 -Pn -n --disable-arp-ping --packet-trace -p 445 --reason -sV
+sudo nmap 192.168.100.59 -Pn -n --disable-arp-ping --packet-trace -p 445 --reason -sV
 ```
 
 **Output:**
 
 ```
-Starting Nmap 7.80 ( https://nmap.org ) at 2022-11-04 11:10 GMT
-SENT (0.3426s) TCP 192.168.1.10:44641 > 192.168.1.54:445 S ttl=55 id=43401 iplen=44  seq=3589068008 win=1024 <mss 1460>
-RCVD (0.3556s) TCP 192.168.1.54:445 > 192.168.1.10:44641 SA ttl=63 id=0 iplen=44  seq=2881527699 win=29200 <mss 1337>
-NSOCK INFO [0.4980s] nsock_iod_new2(): nsock_iod_new (IOD #1)
-NSOCK INFO [0.4980s] nsock_connect_tcp(): TCP connection requested to 192.168.1.54:445 (IOD #1) EID 8
-NSOCK INFO [0.5130s] nsock_trace_handler_callback(): Callback: CONNECT SUCCESS for EID 8 [192.168.1.54:445]
-Service scan sending probe NULL to 192.168.1.54:445 (tcp)
-NSOCK INFO [0.5130s] nsock_read(): Read request from IOD #1 [192.168.1.54:445] (timeout: 6000ms) EID 18
-NSOCK INFO [6.5190s] nsock_trace_handler_callback(): Callback: READ TIMEOUT for EID 18 [192.168.1.54:445]
-Service scan sending probe SMBProgNeg to 192.168.1.54:445 (tcp)
-NSOCK INFO [6.5190s] nsock_write(): Write request for 168 bytes to IOD #1 EID 27 [192.168.1.54:445]
-NSOCK INFO [6.5190s] nsock_read(): Read request from IOD #1 [192.168.1.54:445] (timeout: 5000ms) EID 34
-NSOCK INFO [6.5190s] nsock_trace_handler_callback(): Callback: WRITE SUCCESS for EID 27 [192.168.1.54:445]
-NSOCK INFO [6.5320s] nsock_trace_handler_callback(): Callback: READ SUCCESS for EID 34 [192.168.1.54:445] (135 bytes)
-Service scan match (Probe SMBProgNeg matched with SMBProgNeg line 13836): 192.168.1.54:445 is netbios-ssn.  Version: |Samba smbd|3.X - 4.X|workgroup: WORKGROUP|
-NSOCK INFO [6.5320s] nsock_iod_delete(): nsock_iod_delete (IOD #1)
-Nmap scan report for 192.168.1.54
-Host is up, received user-set (0.013s latency).
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:41 -0400
+SENT (0.4494s) TCP 192.168.100.94:47699 > 192.168.100.59:445 S ttl=41 id=42238 iplen=44  seq=2765008816 win=1024 <mss 1460>
+RCVD (0.4499s) TCP 192.168.100.59:445 > 192.168.100.94:47699 SA ttl=64 id=0 iplen=44  seq=3881286099 win=5840 <mss 1460>
+NSOCK INFO [0.7570s] nsock_iod_new2(): nsock_iod_new (IOD #1)
+NSOCK INFO [0.7590s] nsock_connect_tcp(): TCP connection requested to 192.168.100.59:445 (IOD #1) (timeout: 5000ms) EID 8
+NSOCK INFO [0.7590s] nsock_trace_handler_callback(): Callback: CONNECT SUCCESS for EID 8 [192.168.100.59:445]
+Service scan sending probe NULL to 192.168.100.59:445 (tcp)
+NSOCK INFO [0.7590s] nsock_read(): Read request from IOD #1 [192.168.100.59:445] (timeout: 6000ms) EID 18
+NSOCK INFO [6.7640s] nsock_trace_handler_callback(): Callback: READ TIMEOUT for EID 18 [192.168.100.59:445]
+Service scan sending probe SMBProgNeg to 192.168.100.59:445 (tcp)
+NSOCK INFO [6.7640s] nsock_write(): Write request for 168 bytes to IOD #1 EID 27 [192.168.100.59:445]
+NSOCK INFO [6.7640s] nsock_read(): Read request from IOD #1 [192.168.100.59:445] (timeout: 5000ms) EID 34
+NSOCK INFO [6.7640s] nsock_trace_handler_callback(): Callback: WRITE SUCCESS for EID 27 [192.168.100.59:445]
+NSOCK INFO [6.7670s] nsock_trace_handler_callback(): Callback: READ SUCCESS for EID 34 [192.168.100.59:445] (101 bytes)
+Service scan hard match (Probe SMBProgNeg matched with SMBProgNeg line 14107): 192.168.100.59:445 is netbios-ssn.  Version: |Samba smbd|3.X - 4.X|workgroup: WORKGROUP|
+NSOCK INFO [6.7670s] nsock_iod_delete(): nsock_iod_delete (IOD #1)
+Nmap scan report for 192.168.100.59
+Host is up, received user-set (0.00057s latency).
 
 PORT    STATE SERVICE     REASON         VERSION
-445/tcp open  netbios-ssn syn-ack ttl 63 Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
-Service Info: Host: Ubuntu
+445/tcp open  netbios-ssn syn-ack ttl 64 Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+MAC Address: 40:00:40:06:F0:E1 (Unknown)
 
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 6.55 seconds
+Nmap done: 1 IP address (1 host up) scanned in 6.88 seconds
 ```
 
 **Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
-| 192.168.1.54 | The target being scanned |
+| 192.168.100.59 | The target being scanned |
 | -Pn | Disables ICMP echo requests |
 | -n | Disables DNS resolution |
 | --disable-arp-ping | Disables ARP ping |
