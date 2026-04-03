@@ -21,7 +21,7 @@ sudo nmap 192.168.100.59 -p- -oA target
 **Output:**
 
 ```
-Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-1 13:08 -0400
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:08 -0400
 Nmap scan report for 192.168.100.59
 Host is up (0.00073s latency).
 Not shown: 65526 closed tcp ports (reset)
@@ -194,10 +194,9 @@ XML is not easy to read at a glance, which makes it less useful for sharing resu
 ```bash
 xsltproc target.xml -o target.html
 ```
+
 **Output:**
 
-<img width="1537" height="765" alt="image" src="https://github.com/user-attachments/assets/a0dfeb8f-4731-4b1b-9fa5-0464981f866a" />
-
-
+<img width="1537" height="765" alt="image" src="https://github.com/user-attachments/assets/a0dfeb8f-4731-4b1b-9fa5-0464981f866a" /> 
 
 Once the command runs, a target.html file is created in the same directory. Opening it in any browser produces a formatted, readable report with the scan results laid out in tables. This is particularly useful when preparing documentation for clients or stakeholders who need to understand the findings without reading raw scan data. It requires no additional setup beyond having xsltproc installed, which is available by default on most Linux distributions.
