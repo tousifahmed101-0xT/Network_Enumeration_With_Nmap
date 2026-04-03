@@ -65,7 +65,7 @@ Nmap done: 1 IP address (1 host up) scanned in 0.80 seconds
 | 192.168.100.59 | The target being scanned |
 | --top-ports=10 | Scans the 10 most commonly used TCP ports as defined in the Nmap database |
 
-The output shows three different states across the ten ports. Ports 22, 25, 80, and 110 are open and have active services listening. Ports 21, 23, 443, and 3389 are closed, meaning the host responded with RST to confirm the port is not in use. Ports 139 and 445 are filtered, meaning no response came back, which typically points to a firewall dropping those packets.
+The output shows two different states across the ten ports. Ports 22, 80, 139, 443, and 445 are open and have active services listening. Ports 21, 23, 25, 110, and 3389 are closed, meaning the host responded with RST to confirm the port is not in use.
 
 ---
 
@@ -93,7 +93,6 @@ PORT   STATE  SERVICE
 MAC Address: 40:00:40:06:F0:E5 (Unknown)
 
 Nmap done: 1 IP address (1 host up) scanned in 0.24 seconds
-
 ```
 
 **Option Breakdown:**
@@ -108,7 +107,7 @@ Nmap done: 1 IP address (1 host up) scanned in 0.24 seconds
 
 **Reading the Packet Trace:**
 
-The SENT line shows that Nmap sent a TCP packet from its own IP (192.168.1.10) using source port 63090, directed at port 21 on the target. The `S` in the packet details indicates the SYN flag was set. This is the opening move of a TCP handshake.
+The SENT line shows that Nmap sent a TCP packet from its own IP (192.168.100.94) using source port 44093, directed at port 21 on the target. The `S` in the packet details indicates the SYN flag was set. This is the opening move of a TCP handshake.
 
 The RCVD line shows the target replied with a packet containing the `RA` flags, which stands for RST and ACK. RST signals that no service is listening on that port and the connection attempt is being rejected. ACK acknowledges the receipt of the original SYN. Together they tell Nmap the port is definitively closed.
 
@@ -116,21 +115,21 @@ The RCVD line shows the target replied with a packet containing the `RA` flags, 
 
 | Field | Meaning |
 |-------|---------|
-| SENT (0.0.0980s) | Nmap sent this packet at 0.0429 seconds into the scan |
+| SENT (0.0980s) | Nmap sent this packet at 0.0980 seconds into the scan |
 | TCP | The protocol being used |
-| 192.168.1.10:44093 > | Source IP and port (the scanner) |
+| 192.168.100.94:44093 > | Source IP and port (the scanner) |
 | 192.168.100.59:21 | Destination IP and port (the target) |
 | S | SYN flag set in the TCP header |
-| ttl=39 id=22759 iplen=44  seq=520204497 win=1024 <mss 1460> | Additional TCP and IP header values |
+| ttl=39 id=22759 iplen=44  seq=520204497 win=1024 \<mss 1460\> | Additional TCP and IP header values |
 
 **Response breakdown:**
 
 | Field | Meaning |
 |-------|---------|
-| RCVD (0.0573s) | This packet was received at 0.0573 seconds |
+| RCVD (0.0991s) | This packet was received at 0.0991 seconds |
 | TCP | The protocol used in the response |
 | 192.168.100.59:21 > | Source IP and port (the target responding) |
-| 192.168.1.10:63090 | Destination IP and port (back to the scanner) |
+| 192.168.100.94:44093 | Destination IP and port (back to the scanner) |
 | RA | RST and ACK flags set, indicating the port is closed |
 | ttl=64 id=0 iplen=40  seq=0 win=0 | TCP and IP header values in the reply |
 
@@ -163,7 +162,6 @@ PORT    STATE SERVICE REASON
 443/tcp open  https   syn-ack
 
 Nmap done: 1 IP address (1 host up) scanned in 0.09 seconds
-
 ```
 
 The CONN lines in the packet trace show the full connection being established. First the connection is initiated (Operation now in progress), and then successfully completed (Connected). The reason field shows `syn-ack`, confirming the target responded with SYN-ACK to indicate port 443 is open.
@@ -188,19 +186,15 @@ sudo nmap 192.168.100.59 -p 139 --packet-trace -n --disable-arp-ping -Pn
 
 ```
 Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:36 -0400
-SENT (0.0950s) TCP 192.168.100.94:33892 > 192.168.100.59:139 S ttl=41 id=49086 iplen=44  seq=1868536983 win=1024 <mss 1460>
-RCVD (0.0955s) TCP 192.168.100.59:139 > 192.168.100.94:33892 SA ttl=64 id=0 iplen=44  seq=3783376353 win=5840 <mss 1460>
-Stats: 0:00:00 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan
-SYN Stealth Scan Timing: About 100.00% done; ETC: 13:36 (0:00:00 remaining)
+SENT (0.0381s) TCP 192.168.100.94:33892 > 192.168.100.59:139 S ttl=41 id=49086 iplen=44  seq=1868536983 win=1024 <mss 1460>
+SENT (1.0411s) TCP 192.168.100.94:33892 > 192.168.100.59:139 S ttl=41 id=49086 iplen=44  seq=1868536983 win=1024 <mss 1460>
 Nmap scan report for 192.168.100.59
 Host is up (0.00052s latency).
 
-PORT    STATE SERVICE
-139/tcp open  netbios-ssn
-MAC Address: 40:00:40:06:F0:E1 (Unknown)
+PORT    STATE    SERVICE
+139/tcp filtered netbios-ssn
 
-Nmap done: 1 IP address (1 host up) scanned in 0.24 seconds
-
+Nmap done: 1 IP address (1 host up) scanned in 2.06 seconds
 ```
 
 **Option Breakdown:**
@@ -214,7 +208,7 @@ Nmap done: 1 IP address (1 host up) scanned in 0.24 seconds
 | --disable-arp-ping | Disables ARP ping |
 | -Pn | Disables ICMP echo requests |
 
-Two SYN packets were sent (at 0.0381s and 1.0411s) but no response was received for either. The total scan time of 2.06 seconds is noticeably longer compared to the closed port scan which completed in about 0.05 seconds. That extra time is Nmap waiting out the timeout period after each unanswered packet before trying again.
+Two SYN packets were sent (at 0.0381s and 1.0411s) but no response was received for either. The total scan time of 2.06 seconds is noticeably longer compared to the closed port scan which completed in about 0.24 seconds. That extra time is Nmap waiting out the timeout period after each unanswered packet before trying again.
 
 **When packets are rejected:**
 
@@ -230,17 +224,15 @@ sudo nmap 192.168.100.59 -p 445 --packet-trace -n --disable-arp-ping -Pn
 
 ```
 Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-01 13:37 -0400
-SENT (0.0975s) TCP 192.168.100.94:57559 > 192.168.100.59:445 S ttl=54 id=46801 iplen=44  seq=1207954545 win=1024 <mss 1460>
-RCVD (0.0984s) TCP 192.168.100.59:445 > 192.168.100.94:57559 SA ttl=64 id=0 iplen=44  seq=632388572 win=5840 <mss 1460>
+SENT (0.0429s) TCP 192.168.100.94:57559 > 192.168.100.59:445 S ttl=54 id=46801 iplen=44  seq=1207954545 win=1024 <mss 1460>
+RCVD (0.0434s) ICMP [192.168.100.59 > 192.168.100.94 Port unreachable (type=3/code=3) ] IP [ttl=64 id=0 iplen=56 ]
 Nmap scan report for 192.168.100.59
 Host is up (0.00089s latency).
 
-PORT    STATE SERVICE
-445/tcp open  microsoft-ds
-MAC Address: 40:00:40:06:F0:E1 (Unknown)
+PORT    STATE    SERVICE
+445/tcp filtered microsoft-ds
 
-Nmap done: 1 IP address (1 host up) scanned in 0.22 seconds
-
+Nmap done: 1 IP address (1 host up) scanned in 0.05 seconds
 ```
 
 **Option Breakdown:**
@@ -292,7 +284,7 @@ Nmap done: 1 IP address (1 host up) scanned in 59.33 seconds
 | -F | Scans the top 100 ports |
 | -sU | Performs a UDP scan |
 
-The scan took 98 seconds for just 100 ports. Port 137 and 5353 returned definitive open results because the running services sent back a UDP response. Ports 68, 138, and 631 are marked `open|filtered` because no response came back, and Nmap cannot tell whether that is because they are open and not configured to reply, or because something is blocking the packet.
+The scan took 59 seconds for just 100 ports. Port 137 returned a definitive open result because the running service sent back a UDP response. The output also shows that 58 ports came back closed via ICMP port-unreachable responses, and 41 ports are marked `open|filtered` because no response came back — Nmap cannot tell whether those ports are open but not configured to reply, or whether something is blocking the packets.
 
 ---
 
@@ -319,7 +311,6 @@ PORT    STATE SERVICE    REASON
 137/udp open  netbios-ns udp-response ttl 64
 
 Nmap done: 1 IP address (1 host up) scanned in 0.44 seconds
-
 ```
 
 **Option Breakdown:**
@@ -360,7 +351,6 @@ PORT    STATE  SERVICE REASON
 100/udp closed unknown port-unreach ttl 64
 
 Nmap done: 1 IP address (1 host up) scanned in 0.45 seconds
-
 ```
 
 A UDP packet was sent to port 100, and the target responded with an ICMP type 3, code 3 message meaning "Port Unreachable". This is how a system signals that nothing is listening on a UDP port. The reason shown is `port-unreach`, and the port is marked as closed.
@@ -388,7 +378,6 @@ PORT    STATE         SERVICE     REASON
 138/udp open|filtered netbios-dgm no-response
 
 Nmap done: 1 IP address (1 host up) scanned in 2.45 seconds
-
 ```
 
 **Option Breakdown:**
@@ -463,8 +452,8 @@ Nmap done: 1 IP address (1 host up) scanned in 6.88 seconds
 
 **What the packet trace reveals:**
 
-The scan starts with a standard SYN packet. The target replies with SA (SYN-ACK), confirming the port is open. Nmap then establishes a full TCP connection and sends a NULL probe first, waiting up to 6 seconds for a response. When nothing comes back (READ TIMEOUT), it moves on to a more specific probe called SMBProgNeg, which is a known SMB protocol negotiation packet. The target replies with 135 bytes of data, which Nmap matches against its service signature database.
+The scan starts with a standard SYN packet. The target replies with SA (SYN-ACK), confirming the port is open. Nmap then establishes a full TCP connection and sends a NULL probe first, waiting up to 6 seconds for a response. When nothing comes back (READ TIMEOUT), it moves on to a more specific probe called SMBProgNeg, which is a known SMB protocol negotiation packet. The target replies with 101 bytes of data, which Nmap matches against its service signature database.
 
-The final result identifies the service as Samba smbd running version 3.X to 4.X in a workgroup called WORKGROUP. The host is also identified as running Ubuntu. This level of detail is gathered without running any separate OS detection scan, simply by observing how the service responds to crafted probes.
+The final result identifies the service as Samba smbd running version 3.X to 4.X in a workgroup called WORKGROUP. This level of detail is gathered without running any separate OS detection scan, simply by observing how the service responds to crafted probes.
 
 Version scanning takes longer than a basic port scan because of the additional probe-and-response cycles, but the information it returns is far more actionable and directly useful for identifying potential vulnerabilities on the target.
