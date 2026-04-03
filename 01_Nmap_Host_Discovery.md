@@ -187,13 +187,14 @@ The output clearly shows that Nmap sent an ARP request rather than an ICMP packe
 
 The `--reason` flag explains why Nmap considers a host to be up or down without requiring analysis of raw packet data.
 
-Command:
+**Command:**
 
 ```bash
 sudo nmap 10.129.2.18 -sn -oA host -PE --reason
 ```
 
-Output:
+**Output:**
+
 
 ```
 Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-02 23:33 -0400
@@ -205,7 +206,7 @@ MAC Address: 08:00:27:00:14:D9 (Oracle VirtualBox virtual NIC)
 Nmap done: 1 IP address (1 host up) scanned in 0.03 seconds
 ```
 
-Option Breakdown:
+**Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
@@ -219,7 +220,7 @@ The line `Host is up, received arp-response` shows that the host was discovered 
 
 This happens because the target is on the same local network. In such cases, Nmap automatically prefers ARP requests since they are faster and more reliable than ICMP.
 
-Note: On local networks, Nmap prioritizes ARP for host discovery. For external targets, ARP is not used and Nmap relies on ICMP or other probe techniques.
+**Note:** On local networks, Nmap prioritizes ARP for host discovery. For external targets, ARP is not used and Nmap relies on ICMP or other probe techniques.
 
 ## Forcing ICMP and Disabling ARP
 
@@ -233,13 +234,14 @@ This is useful when you want to test ICMP behavior or simulate how a host respon
 
 ## Forcing ICMP with Packet Trace
 
-Command:
+**Command:**
 
 ```bash
 sudo nmap 10.129.2.18 -sn -oA host -PE --packet-trace --disable-arp-ping
 ```
 
-Output:
+**Output:**
+
 
 ```
 Starting Nmap 7.98 ( https://nmap.org ) at 2026-04-02 23:34 -0400
@@ -251,7 +253,7 @@ MAC Address: 08:00:27:00:14:D9 (Oracle VirtualBox virtual NIC)
 Nmap done: 1 IP address (1 host up) scanned in 0.11 seconds
 ```
 
-Option Breakdown:
+**Option Breakdown:**
 
 | Option | Description |
 |--------|-------------|
