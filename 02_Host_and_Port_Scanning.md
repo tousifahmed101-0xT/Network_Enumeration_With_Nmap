@@ -102,6 +102,7 @@ Nmap done: 1 IP address (1 host up) scanned in 0.24 seconds
 | 192.168.100.59 | The target being scanned |
 | -p 21 | Scans only port 21 |
 | --packet-trace | Shows all packets sent and received |
+| -Pn | Disables ICMP echo requests |
 | -n | Disables DNS resolution |
 | --disable-arp-ping | Disables ARP ping |
 
@@ -137,7 +138,7 @@ The RCVD line shows the target replied with a packet containing the `RA` flags, 
 
 ## Connect Scan
 
-The TCP Connect Scan (-sT) performs a full three-way handshake to determine port state. It sends a SYN packet and waits for a response. If the target replies with SYN-ACK, the port is open. If it replies with RST, the port is closed. Nmap then sends a proper FIN to close the connection cleanly.
+The TCP Connect Scan (-sT) performs a full three-way handshake to determine port state. It sends a SYN packet and waits for a response. If the target replies with SYN-ACK, the port is open. If it replies with RST, the port is closed.
 
 This scan is highly accurate because it goes through the complete handshake. The tradeoff is stealth. A full connection is established, which means most operating systems and applications will log the event. Modern IDS and IPS solutions detect this scan easily. However, it is still useful in environments where accuracy matters more than staying undetected, and it is considered a cleaner method because it behaves exactly like a legitimate client connection, causing minimal disruption to services.
 
