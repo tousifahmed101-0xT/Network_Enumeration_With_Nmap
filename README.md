@@ -29,7 +29,7 @@ This repository is still being built out. Sections will be added progressively.
 | 2 | Host and Port Scanning | Available |
 | 3 | Saving Output | Available |
 | 4 | Service Enumeration | Available |
-| 5 | Scripting Engine (NSE) | Coming soon |
+| 5 | Scripting Engine (NSE) | Available |
 | 6 | Performance Optimization | Coming soon |
 | 7 | Firewall and IDS Evasion | Coming soon |
 
