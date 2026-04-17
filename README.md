@@ -1,6 +1,12 @@
 <div align="center">
 
-# Network Enumeration With Nmap
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,100:203a43&height=130&section=header&text=Network%20Enumeration%20With%20Nmap&fontSize=32&fontColor=ffffff&fontAlignY=55" />
+
+<br>
+
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=18&duration=2500&pause=800&color=58A6FF&center=true&vCenter=true&width=500&lines=Understanding+Packets+%26+Protocols;Practical+Nmap+Enumeration;From+Basics+to+Advanced+Recon" />
+
+<br>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![Status: In Progress](https://img.shields.io/badge/Status-In%20Progress-yellow)
@@ -30,7 +36,7 @@ This repository is still being built out. Sections will be added progressively.
 | 3 | Saving Output | Available |
 | 4 | Service Enumeration | Available |
 | 5 | Scripting Engine (NSE) | Available |
-| 6 | Performance Optimization | Coming soon |
+| 6 | Performance Optimization | Available |
 | 7 | Firewall and IDS Evasion | Coming soon |
 
 ---
@@ -38,9 +44,11 @@ This repository is still being built out. Sections will be added progressively.
 ## Requirements
 
 - Linux system (Kali, Parrot, or Ubuntu work well)
-- Nmap 7.x or later ([nmap.org](https://nmap.org))
+- Nmap 7.x or later (https://nmap.org)
 - Root or sudo access for most scan types
-- A lab environment or authorized target. [HackTheBox](https://hackthebox.com) and [TryHackMe](https://tryhackme.com) are good options
+- A lab environment or authorized target:
+  - https://hackthebox.com
+  - https://tryhackme.com
 
 ---
 
@@ -58,4 +66,20 @@ MIT, see [LICENSE](LICENSE) for details.
 
 <div align="center">
 Made by <a href="https://github.com/tousifahmed101-0xT">Tousif Ahmed</a>
+</div>
+
+
+
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,100:203a43&height=100&section=footer" />
+
+</div>
+
+
+<div align="center">
+
+
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=14&duration=3000&pause=1000&color=58A6FF&center=true&vCenter=true&width=400&lines=Network+Security+is+Defense+in+Depth;Keep+Learning+Recon+Techniques;Authorized+Testing+Only" />
+
 </div>
