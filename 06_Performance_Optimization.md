@@ -13,7 +13,7 @@ The example below scans a /24 subnet across the top 100 ports, first with defaul
 **Default Scan**
 
 ```bash
-sudo nmap 192.168.100.96/24 -F
+sudo nmap 192.168.100.0/24 -F
 ```
 
 ```
@@ -23,7 +23,7 @@ Nmap done: 256 IP addresses (10 hosts up) scanned in 39.44 seconds
 **Optimized RTT**
 
 ```bash
-sudo nmap 192.168.100.96/24 -F --initial-rtt-timeout 50ms --max-rtt-timeout 100ms
+sudo nmap 192.168.100.0/24 -F --initial-rtt-timeout 50ms --max-rtt-timeout 100ms
 ```
 
 ```
@@ -32,12 +32,12 @@ Nmap done: 256 IP addresses (8 hosts up) scanned in 12.29 seconds
 
 | Option | Description |
 |---|---|
-| `192.168.100.96/24` | Target network range |
+| `192.168.100.0/24` | Target network range |
 | `-F` | Scan top 100 ports |
 | `--initial-rtt-timeout 50ms` | Sets the starting RTT timeout value |
 | `--max-rtt-timeout 100ms` | Sets the upper RTT timeout limit |
 
-The optimized scan completed in roughly a quarter of the time, but two hosts were missed entirely. This demonstrates that reducing RTT timeouts too aggressively introduces the risk of incomplete results — a tradeoff that needs to be considered carefully based on the network environment.
+The optimized scan completed in roughly a quarter of the time, but two hosts were missed entirely. This demonstrates that reducing RTT timeouts too aggressively introduces the risk of incomplete results, a tradeoff that needs to be considered carefully based on the network environment.
 
 ---
 
@@ -48,7 +48,7 @@ When Nmap does not receive a response for a port, it retries by default up to 10
 **Default Scan**
 
 ```bash
-sudo nmap 192.168.100.96/24 -F | grep "/tcp" | wc -l
+sudo nmap 192.168.100.0/24 -F | grep "/tcp" | wc -l
 ```
 
 ```
@@ -58,7 +58,7 @@ sudo nmap 192.168.100.96/24 -F | grep "/tcp" | wc -l
 **Reduced Retries**
 
 ```bash
-sudo nmap 192.168.100.96/24 -F --max-retries 0 | grep "/tcp" | wc -l
+sudo nmap 192.168.100.0/24 -F --max-retries 0 | grep "/tcp" | wc -l
 ```
 
 ```
@@ -67,7 +67,7 @@ sudo nmap 192.168.100.96/24 -F --max-retries 0 | grep "/tcp" | wc -l
 
 | Option | Description |
 |---|---|
-| `192.168.100.96/24` | Target network range |
+| `192.168.100.0/24` | Target network range |
 | `-F` | Scan top 100 ports |
 | `--max-retries 0` | Disables retries entirely |
 
@@ -82,7 +82,7 @@ In white-box engagements where your scanner has been whitelisted by security con
 **Default Scan**
 
 ```bash
-sudo nmap 192.168.100.96/24 -F -oN tnet.default
+sudo nmap 192.168.100.0/24 -F -oN tnet.default
 ```
 
 ```
@@ -92,7 +92,7 @@ Nmap done: 256 IP addresses (10 hosts up) scanned in 29.83 seconds
 **Optimized Scan**
 
 ```bash
-sudo nmap 192.168.100.96/24 -F -oN tnet.minrate300 --min-rate 300
+sudo nmap 192.168.100.0/24 -F -oN tnet.minrate300 --min-rate 300
 ```
 
 ```
@@ -101,7 +101,7 @@ Nmap done: 256 IP addresses (10 hosts up) scanned in 8.67 seconds
 
 | Option | Description |
 |---|---|
-| `192.168.100.96/24` | Target network range |
+| `192.168.100.0/24` | Target network range |
 | `-F` | Scan top 100 ports |
 | `-oN tnet.minrate300` | Saves output to a file in normal format |
 | `--min-rate 300` | Sends a minimum of 300 packets per second |
@@ -138,7 +138,7 @@ The default template when nothing is specified is Normal (`-T3`). Higher values 
 **Default Scan**
 
 ```bash
-sudo nmap 192.168.100.96/24 -F -oN tnet.default
+sudo nmap 192.168.100.0/24 -F -oN tnet.default
 ```
 
 ```
@@ -148,7 +148,7 @@ Nmap done: 256 IP addresses (10 hosts up) scanned in 32.44 seconds
 **Insane Scan**
 
 ```bash
-sudo nmap 192.168.100.96/24 -F -oN tnet.T5 -T 5
+sudo nmap 192.168.100.0/24 -F -oN tnet.T5 -T 5
 ```
 
 ```
@@ -157,7 +157,7 @@ Nmap done: 256 IP addresses (10 hosts up) scanned in 18.07 seconds
 
 | Option | Description |
 |---|---|
-| `192.168.100.96/24` | Target network range |
+| `192.168.100.0/24` | Target network range |
 | `-F` | Scan top 100 ports |
 | `-oN tnet.T5` | Saves output to a file in normal format |
 | `-T5` | Applies the insane timing template |
