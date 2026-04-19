@@ -9,7 +9,7 @@
 <br>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Status: In Progress](https://img.shields.io/badge/Status-In%20Progress-yellow)
+![Status: Complete](https://img.shields.io/badge/Status-Complete-brightgreen)
 
 </div>
 
@@ -38,6 +38,7 @@ This repository is still being built out. Sections will be added progressively.
 | 5 | Scripting Engine (NSE) | Available |
 | 6 | Performance Optimization | Available |
 | 7 | Firewall and IDS Evasion | Available |
+| 8 | Nmap cheat sheet | Available |
 
 ---
 
