@@ -31,6 +31,7 @@ This repository is still being built out. Sections will be added progressively.
 
 | # | Topic | Status |
 |---|---|---|
+| 0 | Nmap cheat sheet | Available |
 | 1 | Host Discovery | Available |
 | 2 | Host and Port Scanning | Available |
 | 3 | Saving Output | Available |
@@ -38,7 +39,6 @@ This repository is still being built out. Sections will be added progressively.
 | 5 | Scripting Engine (NSE) | Available |
 | 6 | Performance Optimization | Available |
 | 7 | Firewall and IDS Evasion | Available |
-| 8 | Nmap cheat sheet | Available |
 
 ---
 
